@@ -87,10 +87,9 @@
                     </div>
                 @endforelse
             </div>
-
-            <div class="d-flex justify-content-center mt-4">
-                {{ $directors->links() }}
-            </div>
+            <nav aria-label="Genres pagination" class="d-flex justify-content-center mt-4">
+                {{ $directors->links('pagination::bootstrap-5') }}
+            </nav>
         </div>
     </div>
 </div>

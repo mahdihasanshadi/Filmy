@@ -207,6 +207,7 @@
 
         <main class="py-4">
             <div class="container">
+                @auth
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card">
@@ -259,9 +260,17 @@
                         @yield('content')
                     </div>
                 </div>
+                @else
+                <div class="row justify-content-center">
+                    <div class="col-md-9">
+                        @yield('content')
+                    </div>
+                </div>
+                @endauth
             </div>
         </main>
     </div>
+    @stack('scripts')
 </body>
 
 </html>

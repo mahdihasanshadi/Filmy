@@ -78,9 +78,9 @@
                 @endforelse
             </div>
 
-            <div class="d-flex justify-content-center mt-4">
-                {{ $actors->links() }}
-            </div>
+            <nav aria-label="Actors pagination" class="d-flex justify-content-center mt-4">
+                {{ $actors->links('pagination::bootstrap-5') }}
+            </nav>
         </div>
     </div>
 </div>

@@ -72,9 +72,9 @@
                 </table>
             </div>
 
-            <div class="d-flex justify-content-center mt-4">
-                {{ $genres->links() }}
-            </div>
+            <nav aria-label="Genres pagination" class="d-flex justify-content-center mt-4">
+                {{ $genres->links('pagination::bootstrap-5') }}
+            </nav>
         </div>
     </div>
 </div>
