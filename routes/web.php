@@ -11,6 +11,9 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\ActorController;
 use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\RecommendationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +77,7 @@ Route::prefix('genres')->group(function () {
     Route::get('/', [GenreController::class, 'index'])->name('genres.index');
     Route::get('/create', [GenreController::class, 'create'])->name('genres.create');
     Route::post('/', [GenreController::class, 'store'])->name('genres.store');
+    Route::get('/{genre}', [GenreController::class, 'show'])->name('genres.show');
     Route::get('/{genre}/edit', [GenreController::class, 'edit'])->name('genres.edit');
     Route::put('/{genre}', [GenreController::class, 'update'])->name('genres.update');
     Route::delete('/{genre}', [GenreController::class, 'destroy'])->name('genres.destroy');
@@ -81,19 +85,20 @@ Route::prefix('genres')->group(function () {
 
 // Favorite Routes
 Route::prefix('favorites')->group(function () {
+    Route::get('/', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::get('/movies', [FavoriteController::class, 'movies'])->name('favorites.movies');
     Route::get('/series', [FavoriteController::class, 'series'])->name('favorites.series');
     Route::post('/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 });
 
-// Friend Routes
-Route::prefix('friends')->group(function () {
-    Route::get('/', [FriendController::class, 'index'])->name('friends.index');
-    Route::get('/requests', [FriendController::class, 'requests'])->name('friends.requests');
-    Route::post('/send-request', [FriendController::class, 'sendRequest'])->name('friends.send-request');
-    Route::post('/accept-request', [FriendController::class, 'acceptRequest'])->name('friends.accept-request');
-    Route::post('/reject-request', [FriendController::class, 'rejectRequest'])->name('friends.reject-request');
-    Route::delete('/{friend}', [FriendController::class, 'remove'])->name('friends.remove');
+// Friend routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/friends', [FriendController::class, 'index'])->name('friends.index');
+    Route::post('/friends/send/{user}', [FriendController::class, 'sendRequest'])->name('friends.send');
+    Route::post('/friends/accept/{request}', [FriendController::class, 'acceptRequest'])->name('friends.accept');
+    Route::post('/friends/reject/{request}', [FriendController::class, 'rejectRequest'])->name('friends.reject');
+    Route::post('/friends/cancel/{request}', [FriendController::class, 'cancelRequest'])->name('friends.cancel');
+    Route::post('/friends/remove/{user}', [FriendController::class, 'removeFriend'])->name('friends.remove');
 });
 
 // Actor Routes
@@ -116,4 +121,22 @@ Route::prefix('directors')->group(function () {
     Route::get('/{director}/edit', [DirectorController::class, 'edit'])->name('directors.edit');
     Route::put('/{director}', [DirectorController::class, 'update'])->name('directors.update');
     Route::delete('/{director}', [DirectorController::class, 'destroy'])->name('directors.destroy');
+});
+
+// User Routes
+Route::resource('users', UserController::class);
+
+// Review routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+
+// Recommendation routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
+    Route::get('/recommendations/create', [RecommendationController::class, 'create'])->name('recommendations.create');
+    Route::post('/recommendations', [RecommendationController::class, 'store'])->name('recommendations.store');
+    Route::patch('/recommendations/{recommendation}/read', [RecommendationController::class, 'markAsRead'])->name('recommendations.markAsRead');
+    Route::delete('/recommendations/{recommendation}', [RecommendationController::class, 'destroy'])->name('recommendations.destroy');
 });

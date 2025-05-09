@@ -8,16 +8,17 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('movie_categories', function (Blueprint $table) {
+        Schema::create('movies', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
+            $table->string('title');
             $table->text('description')->nullable();
+            $table->string('poster')->nullable();
+            $table->string('trailer_url')->nullable();
+            $table->integer('duration')->nullable();
+            $table->integer('release_year')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -25,11 +26,9 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('movie_categories');
+        Schema::dropIfExists('movies');
     }
 };

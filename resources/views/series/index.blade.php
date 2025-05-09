@@ -20,6 +20,25 @@
         </div>
     @endif
 
+    <!-- Search Form -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form action="{{ route('series.index') }}" method="GET" class="d-flex gap-2">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search series by title, description, genre, actor, or director..." value="{{ request('search') }}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                @if(request('search'))
+                    <a href="{{ route('series.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                @endif
+            </form>
+        </div>
+    </div>
+
     <div class="row">
         @forelse($series as $show)
             <div class="col-md-4 mb-4">
@@ -50,6 +69,14 @@
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">
                                 <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                        <form action="{{ route('favorites.toggle') }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="type" value="series">
+                            <input type="hidden" name="id" value="{{ $show->id }}">
+                            <button type="submit" class="btn {{ auth()->user()->favorites()->where('favoritable_type', 'App\\Models\\Series')->where('favoritable_id', $show->id)->exists() ? 'btn-danger' : 'btn-outline-danger' }} btn-sm">
+                                <i class="fas fa-heart"></i>
                             </button>
                         </form>
                     </div>

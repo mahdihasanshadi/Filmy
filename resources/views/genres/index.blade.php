@@ -42,7 +42,11 @@
                     <tbody>
                         @forelse($genres as $genre)
                             <tr>
-                                <td>{{ $genre->name }}</td>
+                                <td>
+                                    <a href="{{ route('genres.show', $genre) }}" class="text-decoration-none">
+                                        {{ $genre->name }}
+                                    </a>
+                                </td>
                                 <td>{{ $genre->slug }}</td>
                                 <td>{{ $genre->movies->count() }}</td>
                                 <td>

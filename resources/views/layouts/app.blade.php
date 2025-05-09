@@ -8,16 +8,142 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Filmy') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --text-color: #2c3e50;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+        }
 
-    {{-- Add this in the <head> section of your app.blade.php --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .navbar-brand span {
+            color: var(--secondary-color);
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+        }
+
+        .list-group-item i {
+            color: var(--primary-color);
+            width: 24px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-success:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 500;
+        }
+
+        .badge.bg-success {
+            background-color: var(--accent-color) !important;
+        }
+
+        .badge.bg-warning {
+            background-color: var(--secondary-color) !important;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 8px;
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+    </style>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -25,10 +151,10 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    <span>F</span>ilmy
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -39,7 +165,6 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -85,7 +210,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header">
                                 <h5 class="card-title mb-0">
                                     <i class="fas fa-bars me-2"></i>Menu
                                 </h5>
@@ -107,7 +232,7 @@
                                     <i class="fas fa-theater-masks me-3"></i>
                                     <span>Genre</span>
                                 </a>
-                                <a href="{{ route('favorites.movies') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                <a href="{{ route('favorites.index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
                                     <i class="fas fa-heart me-3"></i>
                                     <span>Favorites</span>
                                 </a>
@@ -122,6 +247,10 @@
                                 <a href="{{ route('directors.index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
                                     <i class="fas fa-user-tie me-3"></i>
                                     <span>Directors</span>
+                                </a>
+                                <a href="{{ route('users.index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-users me-3"></i>
+                                    <span>All Users</span>
                                 </a>
                             </div>
                         </div>

@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         // \App\Models\User::factory(10)->create();
 
@@ -22,13 +22,14 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            AdminUserSeeder::class,
             GenreSeeder::class,
-            MovieCategorySeeder::class,
-            ActorSeeder::class,
-            DirectorSeeder::class,
+            // MovieCategorySeeder::class, // Skipping since we removed categories
             MovieSeeder::class,
             SeriesSeeder::class,
             SeasonEpisodeSeeder::class,
+            ActorSeeder::class,
+            DirectorSeeder::class,
             ActorConnectionSeeder::class,
             DirectorConnectionSeeder::class,
         ]);

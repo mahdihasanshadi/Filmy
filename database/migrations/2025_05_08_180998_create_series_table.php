@@ -21,13 +21,7 @@ return new class extends Migration
             $table->string('trailer_url')->nullable();
             $table->year('release_year')->nullable();
 
-            // Category and Genre foreign keys
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')
-                  ->references('id')
-                  ->on('movie_categories')
-                  ->onDelete('cascade');
-
+            // Genre foreign key
             $table->unsignedBigInteger('genre_id');
             $table->foreign('genre_id')
                   ->references('id')

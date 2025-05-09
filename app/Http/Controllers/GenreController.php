@@ -61,9 +61,21 @@ class GenreController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(MovieGenre $genre)
     {
-        //
+        $movies = $genre->movies()
+            ->where('is_active', true)
+            ->with(['genres', 'actors', 'directors'])
+            ->latest()
+            ->paginate(10);
+
+        $series = $genre->series()
+            ->where('is_active', true)
+            ->with(['genre', 'actors', 'directors'])
+            ->latest()
+            ->paginate(10);
+
+        return view('genres.show', compact('genre', 'movies', 'series'));
     }
 
     /**

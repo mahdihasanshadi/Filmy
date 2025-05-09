@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'referer_id',
+        'is_verified',
+        'is_admin',
     ];
 
     /**
@@ -40,5 +43,39 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_verified' => 'boolean',
+        'is_admin' => 'boolean',
     ];
+
+    /**
+     * Get all friends of the user
+     */
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
+    }
+
+    /**
+     * Get all friend requests sent by the user
+     */
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'sender_id');
+    }
+
+    /**
+     * Get all friend requests received by the user
+     */
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'receiver_id');
+    }
+
+    /**
+     * Get all favorites of the user
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

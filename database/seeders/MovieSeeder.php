@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Movie;
-use App\Models\MovieCategory;
 use App\Models\MovieGenre;
 use App\Models\Actor;
 use App\Models\Director;
@@ -21,7 +20,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=NmzuHjWmXOc',
                 'duration' => 142,
                 'release_year' => 1994,
-                'category' => 'Feature Film',
                 'genre' => 'Drama',
                 'actors' => ['Morgan Freeman', 'Tim Robbins'],
                 'directors' => ['Frank Darabont']
@@ -33,7 +31,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=sY1S34973zA',
                 'duration' => 175,
                 'release_year' => 1972,
-                'category' => 'Feature Film',
                 'genre' => 'Crime',
                 'actors' => ['Marlon Brando', 'Al Pacino'],
                 'directors' => ['Francis Ford Coppola']
@@ -45,7 +42,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=YoHD9XEInc0',
                 'duration' => 148,
                 'release_year' => 2010,
-                'category' => 'Feature Film',
                 'genre' => 'Sci-Fi',
                 'actors' => ['Leonardo DiCaprio', 'Tom Hardy'],
                 'directors' => ['Christopher Nolan']
@@ -57,7 +53,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=EXeTwQWrcwY',
                 'duration' => 152,
                 'release_year' => 2008,
-                'category' => 'Feature Film',
                 'genre' => 'Action',
                 'actors' => ['Christian Bale', 'Heath Ledger'],
                 'directors' => ['Christopher Nolan']
@@ -69,7 +64,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=s7EdQ4FqbhY',
                 'duration' => 154,
                 'release_year' => 1994,
-                'category' => 'Feature Film',
                 'genre' => 'Crime',
                 'actors' => ['John Travolta', 'Samuel L. Jackson'],
                 'directors' => ['Quentin Tarantino']
@@ -81,7 +75,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=bLvqoHBptjg',
                 'duration' => 142,
                 'release_year' => 1994,
-                'category' => 'Feature Film',
                 'genre' => 'Drama',
                 'actors' => ['Tom Hanks', 'Robin Wright'],
                 'directors' => ['Robert Zemeckis']
@@ -93,7 +86,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=vKQi3bBA1y8',
                 'duration' => 136,
                 'release_year' => 1999,
-                'category' => 'Feature Film',
                 'genre' => 'Sci-Fi',
                 'actors' => ['Keanu Reeves', 'Laurence Fishburne'],
                 'directors' => ['Lana Wachowski', 'Lilly Wachowski']
@@ -105,7 +97,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=gG22XNhtnoY',
                 'duration' => 195,
                 'release_year' => 1993,
-                'category' => 'Feature Film',
                 'genre' => 'Drama',
                 'actors' => ['Liam Neeson', 'Ralph Fiennes'],
                 'directors' => ['Steven Spielberg']
@@ -117,7 +108,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=QWBKEmWWL38',
                 'duration' => 127,
                 'release_year' => 1993,
-                'category' => 'Feature Film',
                 'genre' => 'Adventure',
                 'actors' => ['Sam Neill', 'Laura Dern'],
                 'directors' => ['Steven Spielberg']
@@ -129,7 +119,6 @@ class MovieSeeder extends Seeder
                 'trailer_url' => 'https://www.youtube.com/watch?v=4sj1MT05lAA',
                 'duration' => 88,
                 'release_year' => 1994,
-                'category' => 'Animation',
                 'genre' => 'Animation',
                 'actors' => ['Matthew Broderick', 'James Earl Jones'],
                 'directors' => ['Roger Allers', 'Rob Minkoff']
@@ -141,7 +130,6 @@ class MovieSeeder extends Seeder
             $directors = $movieData['directors'];
             unset($movieData['actors'], $movieData['directors']);
 
-            $category = MovieCategory::where('name', $movieData['category'])->first();
             $genre = MovieGenre::where('name', $movieData['genre'])->first();
 
             $movie = Movie::create([
@@ -151,10 +139,13 @@ class MovieSeeder extends Seeder
                 'trailer_url' => $movieData['trailer_url'],
                 'duration' => $movieData['duration'],
                 'release_year' => $movieData['release_year'],
-                'category_id' => $category->id,
-                'genre_id' => $genre->id,
                 'is_active' => true
             ]);
+
+            // Attach genre
+            if ($genre) {
+                $movie->genres()->attach($genre->id);
+            }
 
             // Attach actors
             foreach ($actors as $actorName) {

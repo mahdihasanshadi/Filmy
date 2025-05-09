@@ -17,7 +17,6 @@ class Movie extends Model
         'duration',
         'release_year',
         'category_id',
-        'genre_id',
         'is_active'
     ];
 
@@ -32,9 +31,9 @@ class Movie extends Model
         return $this->belongsTo(MovieCategory::class);
     }
 
-    public function genre()
+    public function genres()
     {
-        return $this->belongsTo(MovieGenre::class);
+        return $this->belongsToMany(MovieGenre::class, 'movie_movie_genre');
     }
 
     public function actors()
@@ -44,11 +43,21 @@ class Movie extends Model
 
     public function directors()
     {
-        return $this->belongsToMany(Director::class);
+        return $this->belongsToMany(Director::class, 'director_movie');
     }
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function isFavorite()
+    {
+        return $this->favorites()->where('user_id', auth()->id())->exists();
+    }
+
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
     }
 }

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Series;
-use App\Models\MovieCategory;
 use App\Models\MovieGenre;
 use App\Models\Actor;
 use App\Models\Director;
@@ -116,9 +115,6 @@ class SeriesSeeder extends Seeder
             ]
         ];
 
-        // Get the TV Series category
-        $tvSeriesCategory = MovieCategory::where('name', 'TV Series')->first();
-
         foreach ($series as $seriesData) {
             // Get actors and directors if they exist, otherwise set to empty arrays
             $actors = $seriesData['actors'] ?? [];
@@ -136,7 +132,6 @@ class SeriesSeeder extends Seeder
                 'poster' => $seriesData['poster'],
                 'trailer_url' => $seriesData['trailer_url'],
                 'release_year' => $seriesData['release_year'],
-                'category_id' => $tvSeriesCategory->id, // Always use TV Series category
                 'genre_id' => $genre->id,
                 'is_active' => true
             ]);

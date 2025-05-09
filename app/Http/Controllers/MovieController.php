@@ -17,13 +17,29 @@ class MovieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movie::with(['genre', 'actors', 'directors'])
-            ->where('is_active', true)
-            ->latest()
-            ->paginate(10);
+        $query = Movie::with(['genres', 'actors', 'directors'])
+            ->where('is_active', true);
 
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('genres', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('actors', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('directors', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $movies = $query->latest()->paginate(10);
         return view('movies.index', compact('movies'));
     }
 
@@ -56,7 +72,8 @@ class MovieController extends Controller
             'trailer_url' => 'nullable|url',
             'duration' => 'nullable|integer',
             'release_year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
-            'genre_id' => 'required|exists:movie_genres,id',
+            'genres' => 'required|array',
+            'genres.*' => 'exists:movie_genres,id',
             'actors' => 'nullable|array',
             'actors.*' => 'exists:actors,id',
             'directors' => 'nullable|array',
@@ -68,6 +85,10 @@ class MovieController extends Controller
         $movie = Movie::create($validated);
 
         // Sync relationships
+        if ($request->has('genres')) {
+            $movie->genres()->sync($request->genres);
+        }
+
         if ($request->has('actors')) {
             $movie->actors()->sync($request->actors);
         }
@@ -88,9 +109,18 @@ class MovieController extends Controller
      */
     public function show(Movie $movie)
     {
-        $movie->load(['genre', 'actors', 'directors', 'reviews']);
+        $movie->load(['genres', 'actors', 'directors']);
 
-        return view('movies.show', compact('movie'));
+        $reviews = $movie->reviews()
+            ->with('user')
+            ->latest()
+            ->paginate(10);
+
+        $userReview = auth()->check()
+            ? $movie->reviews()->where('user_id', auth()->id())->first()
+            : null;
+
+        return view('movies.show', compact('movie', 'reviews', 'userReview'));
     }
 
     /**
@@ -124,7 +154,8 @@ class MovieController extends Controller
             'trailer_url' => 'nullable|url',
             'duration' => 'nullable|integer',
             'release_year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
-            'genre_id' => 'required|exists:movie_genres,id',
+            'genres' => 'required|array',
+            'genres.*' => 'exists:movie_genres,id',
             'actors' => 'nullable|array',
             'actors.*' => 'exists:actors,id',
             'directors' => 'nullable|array',
@@ -135,6 +166,10 @@ class MovieController extends Controller
         $movie->update($validated);
 
         // Sync relationships
+        if ($request->has('genres')) {
+            $movie->genres()->sync($request->genres);
+        }
+
         if ($request->has('actors')) {
             $movie->actors()->sync($request->actors);
         }

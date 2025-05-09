@@ -16,12 +16,31 @@ class SeriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $series = Series::with(['genre', 'actors', 'directors'])
-            ->where('is_active', true)
-            ->latest()
-            ->paginate(10);
+        $query = Series::with(['genre', 'actors', 'directors'])
+            ->where('is_active', true);
+
+        // Search functionality
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('release_year', 'like', "%{$search}%")
+                  ->orWhereHas('genre', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('actors', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('directors', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $series = $query->latest()->paginate(10);
 
         return view('series.index', compact('series'));
     }
@@ -90,7 +109,17 @@ class SeriesController extends Controller
     public function show(Series $series)
     {
         $series->load(['genre', 'actors', 'directors', 'seasons.episodes']);
-        return view('series.show', compact('series'));
+
+        $reviews = $series->reviews()
+            ->with('user')
+            ->latest()
+            ->paginate(10);
+
+        $userReview = auth()->check()
+            ? $series->reviews()->where('user_id', auth()->id())->first()
+            : null;
+
+        return view('series.show', compact('series', 'reviews', 'userReview'));
     }
 
     /**

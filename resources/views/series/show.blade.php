@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4">
+<div class="container mx-auto px-4 py-8">
     <div class="row">
         <div class="col-md-4">
             @if($series->poster)
@@ -127,5 +127,11 @@
             </div>
         </div>
     @endif
+
+    <!-- Reviews section -->
+    <div class="mt-8">
+        @include('reviews._form')
+        @include('reviews._list')
+    </div>
 </div>
 @endsection
