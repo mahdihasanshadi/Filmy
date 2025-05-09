@@ -1,0 +1,260 @@
+LARAVEL CRUD METHODS DOCUMENTATION
+=================================
+
+1. MOVIE CONTROLLER (app/Http/Controllers/MovieController.php)
+------------------------------------------------------------
+GET Methods:
+- index(): Display list of movies with search, filter, and pagination
+- show(Movie $movie): Display single movie with reviews and user review
+- create(): Show movie creation form
+- edit(Movie $movie): Show movie edit form
+
+POST/PUT Methods:
+- store(Request $request): Store new movie with validation
+- update(Request $request, Movie $movie): Update existing movie
+- destroy(Movie $movie): Delete movie
+
+2. SERIES CONTROLLER (app/Http/Controllers/SeriesController.php)
+-------------------------------------------------------------
+GET Methods:
+- index(): Display list of series with search and pagination
+- show(Series $series): Display single series with episodes
+- create(): Show series creation form
+- edit(Series $series): Show series edit form
+
+POST/PUT Methods:
+- store(Request $request): Store new series with validation
+- update(Request $request, Series $series): Update existing series
+- destroy(Series $series): Delete series
+
+3. EPISODE CONTROLLER (app/Http/Controllers/EpisodeController.php)
+---------------------------------------------------------------
+GET Methods:
+- index(): Display list of episodes
+- show(Episode $episode): Display single episode
+- create(): Show episode creation form
+- edit(Episode $episode): Show episode edit form
+
+POST/PUT Methods:
+- store(Request $request): Store new episode with validation
+- update(Request $request, Episode $episode): Update existing episode
+- destroy(Episode $episode): Delete episode
+
+4. GENRE CONTROLLER (app/Http/Controllers/GenreController.php)
+-----------------------------------------------------------
+GET Methods:
+- index(): Display list of genres with pagination
+- show(Genre $genre): Display single genre
+- create(): Show genre creation form
+- edit(Genre $genre): Show genre edit form
+
+POST/PUT Methods:
+- store(Request $request): Store new genre with validation
+- update(Request $request, Genre $genre): Update existing genre
+- destroy(Genre $genre): Delete genre
+
+5. REVIEW CONTROLLER (app/Http/Controllers/ReviewController.php)
+------------------------------------------------------------
+GET Methods:
+- index(): Display list of reviews
+- show(Review $review): Display single review
+- create(): Show review creation form
+- edit(Review $review): Show review edit form
+
+POST/PUT Methods:
+- store(Request $request): Store new review with validation
+- update(Request $request, Review $review): Update existing review
+- destroy(Review $review): Delete review
+
+6. RECOMMENDATION CONTROLLER (app/Http/Controllers/RecommendationController.php)
+----------------------------------------------------------------------------
+GET Methods:
+- index(): Display list of recommendations
+- show(Recommendation $recommendation): Display single recommendation
+- create(): Show recommendation creation form
+- edit(Recommendation $recommendation): Show recommendation edit form
+
+POST/PUT Methods:
+- store(Request $request): Store new recommendation with validation
+- update(Request $request, Recommendation $recommendation): Update existing recommendation
+- destroy(Recommendation $recommendation): Delete recommendation
+
+7. AUTH CONTROLLERS
+-----------------
+A. REGISTERED USER CONTROLLER (app/Http/Controllers/Auth/RegisteredUserController.php)
+GET Methods:
+- create(): Show registration form
+
+POST Methods:
+- store(Request $request): Store new user with validation
+
+B. AUTHENTICATED SESSION CONTROLLER (app/Http/Controllers/Auth/AuthenticatedSessionController.php)
+GET Methods:
+- create(): Show login form
+
+POST Methods:
+- store(Request $request): Authenticate user and create session
+- destroy(Request $request): Logout user and destroy session
+
+C. EMAIL VERIFICATION CONTROLLER (app/Http/Controllers/Auth/EmailVerificationController.php)
+GET Methods:
+- notice(): Show verification notice
+- verify(EmailVerificationRequest $request): Verify email
+- send(Request $request): Resend verification email
+
+D. PASSWORD RESET CONTROLLER (app/Http/Controllers/Auth/PasswordResetController.php)
+GET Methods:
+- create(): Show password reset form
+
+POST Methods:
+- store(Request $request): Send password reset link
+
+E. NEW PASSWORD CONTROLLER (app/Http/Controllers/Auth/NewPasswordController.php)
+GET Methods:
+- create(): Show new password form
+
+POST Methods:
+- store(Request $request): Reset password
+
+F. EMAIL VERIFICATION NOTIFICATION CONTROLLER (app/Http/Controllers/Auth/EmailVerificationNotificationController.php)
+POST Methods:
+- store(Request $request): Resend verification email
+
+G. CONFIRMABLE PASSWORD CONTROLLER (app/Http/Controllers/Auth/ConfirmablePasswordController.php)
+GET Methods:
+- show(): Show password confirmation form
+
+POST Methods:
+- store(Request $request): Confirm password
+
+H. PASSWORD CONFIRMATION CONTROLLER (app/Http/Controllers/Auth/PasswordConfirmationController.php)
+GET Methods:
+- show(): Show password confirmation form
+
+POST Methods:
+- store(Request $request): Confirm password
+
+I. VERIFIED EMAIL NOTIFICATION CONTROLLER (app/Http/Controllers/Auth/VerifiedEmailNotificationController.php)
+GET Methods:
+- __invoke(Request $request): Handle verified email notification
+
+J. PASSWORD RESET LINK CONTROLLER (app/Http/Controllers/Auth/PasswordResetLinkController.php)
+GET Methods:
+- create(): Show password reset link form
+
+POST Methods:
+- store(Request $request): Send password reset link
+
+K. CONFIRM PASSWORD CONTROLLER (app/Http/Controllers/Auth/ConfirmPasswordController.php)
+GET Methods:
+- show(): Show password confirmation form
+
+POST Methods:
+- store(Request $request): Confirm password
+
+L. FORGOT PASSWORD CONTROLLER (app/Http/Controllers/Auth/ForgotPasswordController.php)
+GET Methods:
+- showLinkRequestForm(): Show forgot password form
+
+POST Methods:
+- sendResetLinkEmail(Request $request): Send password reset link
+
+M. RESET PASSWORD CONTROLLER (app/Http/Controllers/Auth/ResetPasswordController.php)
+GET Methods:
+- showResetForm(Request $request): Show password reset form
+
+POST Methods:
+- reset(Request $request): Reset password
+
+N. VERIFICATION CONTROLLER (app/Http/Controllers/Auth/VerificationController.php)
+GET Methods:
+- show(): Show verification notice
+- verify(Request $request): Verify email
+- resend(Request $request): Resend verification email
+
+O. LOGIN CONTROLLER (app/Http/Controllers/Auth/LoginController.php)
+GET Methods:
+- showLoginForm(): Show login form
+
+POST Methods:
+- login(Request $request): Authenticate user
+- logout(Request $request): Logout user
+
+P. REGISTER CONTROLLER (app/Http/Controllers/Auth/RegisterController.php)
+GET Methods:
+- showRegistrationForm(): Show registration form
+
+POST Methods:
+- register(Request $request): Register new user
+
+Q. FORGOT PASSWORD CONTROLLER (app/Http/Controllers/Auth/ForgotPasswordController.php)
+GET Methods:
+- showLinkRequestForm(): Show forgot password form
+
+POST Methods:
+- sendResetLinkEmail(Request $request): Send password reset link
+
+R. RESET PASSWORD CONTROLLER (app/Http/Controllers/Auth/ResetPasswordController.php)
+GET Methods:
+- showResetForm(Request $request): Show password reset form
+
+POST Methods:
+- reset(Request $request): Reset password
+
+S. VERIFICATION CONTROLLER (app/Http/Controllers/Auth/VerificationController.php)
+GET Methods:
+- show(): Show verification notice
+- verify(Request $request): Verify email
+- resend(Request $request): Resend verification email
+
+T. LOGIN CONTROLLER (app/Http/Controllers/Auth/LoginController.php)
+GET Methods:
+- showLoginForm(): Show login form
+
+POST Methods:
+- login(Request $request): Authenticate user
+- logout(Request $request): Logout user
+
+U. REGISTER CONTROLLER (app/Http/Controllers/Auth/RegisterController.php)
+GET Methods:
+- showRegistrationForm(): Show registration form
+
+POST Methods:
+- register(Request $request): Register new user
+
+V. FORGOT PASSWORD CONTROLLER (app/Http/Controllers/Auth/ForgotPasswordController.php)
+GET Methods:
+- showLinkRequestForm(): Show forgot password form
+
+POST Methods:
+- sendResetLinkEmail(Request $request): Send password reset link
+
+W. RESET PASSWORD CONTROLLER (app/Http/Controllers/Auth/ResetPasswordController.php)
+GET Methods:
+- showResetForm(Request $request): Show password reset form
+
+POST Methods:
+- reset(Request $request): Reset password
+
+X. VERIFICATION CONTROLLER (app/Http/Controllers/Auth/VerificationController.php)
+GET Methods:
+- show(): Show verification notice
+- verify(Request $request): Verify email
+- resend(Request $request): Resend verification email
+
+Y. LOGIN CONTROLLER (app/Http/Controllers/Auth/LoginController.php)
+GET Methods:
+- showLoginForm(): Show login form
+
+POST Methods:
+- login(Request $request): Authenticate user
+- logout(Request $request): Logout user
+
+Z. REGISTER CONTROLLER (app/Http/Controllers/Auth/RegisterController.php)
+GET Methods:
+- showRegistrationForm(): Show registration form
+
+POST Methods:
+- register(Request $request): Register new user
+
+Note: This documentation includes all CRUD methods from the controllers in the application. Some controllers may have additional methods for specific functionality. The methods are organized by controller and include both GET and POST/PUT methods where applicable.

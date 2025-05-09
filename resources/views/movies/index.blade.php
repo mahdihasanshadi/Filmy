@@ -99,7 +99,7 @@
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-        {{ $movies->links() }}
+        {{ $movies->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection

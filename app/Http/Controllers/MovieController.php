@@ -43,6 +43,55 @@ class MovieController extends Controller
         return view('movies.index', compact('movies'));
     }
 
+    // $search = $request->get('search');
+    // $sql = "SELECT movies.* FROM movies WHERE movies.is_active = 1";
+    // $params = [];
+
+    // if ($search) {
+    //     $sql .= " AND (movies.title LIKE ? OR movies.description LIKE ? ";
+    //     $params[] = "%{$search}%";
+    //     $params[] = "%{$search}%";
+    //     $sql .= " OR EXISTS (SELECT 1 FROM movie_movie_genre INNER JOIN movie_genres ON movie_movie_genre.movie_genre_id = movie_genres.id WHERE movie_movie_genre.movie_id = movies.id AND movie_genres.name LIKE ?)";
+    //     $params[] = "%{$search}%";
+    //     $sql .= " OR EXISTS (SELECT 1 FROM actor_movie INNER JOIN actors ON actor_movie.actor_id = actors.id WHERE actor_movie.movie_id = movies.id AND actors.name LIKE ?)";
+    //     $params[] = "%{$search}%";
+    //     $sql .= " OR EXISTS (SELECT 1 FROM director_movie INNER JOIN directors ON director_movie.director_id = directors.id WHERE director_movie.movie_id = movies.id AND directors.name LIKE ?))";
+    //     $params[] = "%{$search}%";
+    // }
+
+    // $sql .= " ORDER BY movies.created_at DESC";
+
+    // // Pagination
+    // $page = $request->get('page', 1);
+    // $perPage = 10;
+    // $offset = ($page - 1) * $perPage;
+    // $sqlPaginated = $sql . " LIMIT $perPage OFFSET $offset";
+
+    // $movies = collect(DB::select($sqlPaginated, $params));
+
+    // // Get total count for pagination
+    // $countSql = "SELECT COUNT(*) as total FROM movies WHERE movies.is_active = 1";
+    // $countParams = [];
+    // if ($search) {
+    //     $countSql .= " AND (movies.title LIKE ? OR movies.description LIKE ? ";
+    //     $countParams[] = "%{$search}%";
+    //     $countParams[] = "%{$search}%";
+    //     $countSql .= " OR EXISTS (SELECT 1 FROM movie_movie_genre INNER JOIN movie_genres ON movie_movie_genre.movie_genre_id = movie_genres.id WHERE movie_movie_genre.movie_id = movies.id AND movie_genres.name LIKE ?)";
+    //     $countParams[] = "%{$search}%";
+    //     $countSql .= " OR EXISTS (SELECT 1 FROM actor_movie INNER JOIN actors ON actor_movie.actor_id = actors.id WHERE actor_movie.movie_id = movies.id AND actors.name LIKE ?)";
+    //     $countParams[] = "%{$search}%";
+    //     $countSql .= " OR EXISTS (SELECT 1 FROM director_movie INNER JOIN directors ON director_movie.director_id = directors.id WHERE director_movie.movie_id = movies.id AND directors.name LIKE ?))";
+    //     $countParams[] = "%{$search}%";
+    // }
+    // $total = DB::select($countSql, $countParams)[0]->total;
+
+    // $movies = new LengthAwarePaginator($movies, $total, $perPage, $page, [
+    //     'path' => $request->url(),
+    //     'query' => $request->query(),
+    // ]);
+
+    // return $movies;
+
     /**
      * Show the form for creating a new resource.
      *

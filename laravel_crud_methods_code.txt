@@ -1,0 +1,384 @@
+LARAVEL CRUD METHODS CODE IMPLEMENTATION
+=======================================
+
+1. MOVIE CONTROLLER (app/Http/Controllers/MovieController.php)
+------------------------------------------------------------
+
+public function index(Request $request)
+{
+    $query = Movie::with(['genres', 'actors', 'directors'])
+        ->where('is_active', true);
+
+    if ($request->has('search')) {
+        $search = $request->get('search');
+        $query->where(function($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%")
+              ->orWhereHas('genres', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              })
+              ->orWhereHas('actors', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              })
+              ->orWhereHas('directors', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    $movies = $query->latest()->paginate(10);
+    return view('movies.index', compact('movies'));
+}
+
+public function create()
+{
+    $genres = MovieGenre::where('is_active', true)->get();
+    $actors = Actor::where('is_active', true)->get();
+    $directors = Director::where('is_active', true)->get();
+
+    return view('movies.create', compact('genres', 'actors', 'directors'));
+}
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'poster' => 'nullable|url|max:255',
+        'trailer_url' => 'nullable|url',
+        'duration' => 'nullable|integer',
+        'release_year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
+        'genres' => 'required|array',
+        'genres.*' => 'exists:movie_genres,id',
+        'actors' => 'nullable|array',
+        'actors.*' => 'exists:actors,id',
+        'directors' => 'nullable|array',
+        'directors.*' => 'exists:directors,id',
+    ]);
+
+    $validated['is_active'] = true;
+
+    $movie = Movie::create($validated);
+
+    // Sync relationships
+    if ($request->has('genres')) {
+        $movie->genres()->sync($request->genres);
+    }
+
+    if ($request->has('actors')) {
+        $movie->actors()->sync($request->actors);
+    }
+
+    if ($request->has('directors')) {
+        $movie->directors()->sync($request->directors);
+    }
+
+    return redirect()->route('movies.show', $movie)
+        ->with('success', 'Movie created successfully.');
+}
+
+public function show(Movie $movie)
+{
+    $movie->load(['genres', 'actors', 'directors']);
+
+    $reviews = $movie->reviews()
+        ->with('user')
+        ->latest()
+        ->paginate(10);
+
+    $userReview = auth()->check()
+        ? $movie->reviews()->where('user_id', auth()->id())->first()
+        : null;
+
+    return view('movies.show', compact('movie', 'reviews', 'userReview'));
+}
+
+public function edit(Movie $movie)
+{
+    $genres = MovieGenre::where('is_active', true)->get();
+    $actors = Actor::where('is_active', true)->get();
+    $directors = Director::where('is_active', true)->get();
+
+    return view('movies.edit', compact('movie', 'genres', 'actors', 'directors'));
+}
+
+public function update(Request $request, Movie $movie)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'poster' => 'nullable|url|max:255',
+        'trailer_url' => 'nullable|url',
+        'duration' => 'nullable|integer',
+        'release_year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
+        'genres' => 'required|array',
+        'genres.*' => 'exists:movie_genres,id',
+        'actors' => 'nullable|array',
+        'actors.*' => 'exists:actors,id',
+        'directors' => 'nullable|array',
+        'directors.*' => 'exists:directors,id',
+        'is_active' => 'boolean'
+    ]);
+
+    $movie->update($validated);
+
+    // Sync relationships
+    if ($request->has('genres')) {
+        $movie->genres()->sync($request->genres);
+    }
+
+    if ($request->has('actors')) {
+        $movie->actors()->sync($request->actors);
+    }
+
+    if ($request->has('directors')) {
+        $movie->directors()->sync($request->directors);
+    }
+
+    return redirect()->route('movies.show', $movie)
+        ->with('success', 'Movie updated successfully.');
+}
+
+public function destroy(Movie $movie)
+{
+    $movie->delete();
+    return redirect()->route('movies.index')
+        ->with('success', 'Movie deleted successfully.');
+}
+
+2. SERIES CONTROLLER (app/Http/Controllers/SeriesController.php)
+-------------------------------------------------------------
+
+public function index(Request $request)
+{
+    $query = Series::with(['genre', 'actors', 'directors'])
+        ->where('is_active', true);
+
+    if ($request->has('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%")
+              ->orWhere('release_year', 'like', "%{$search}%")
+              ->orWhereHas('genre', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              })
+              ->orWhereHas('actors', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              })
+              ->orWhereHas('directors', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    $series = $query->latest()->paginate(10);
+    return view('series.index', compact('series'));
+}
+
+public function create()
+{
+    $genres = MovieGenre::where('is_active', true)->get();
+    $actors = Actor::where('is_active', true)->get();
+    $directors = Director::where('is_active', true)->get();
+
+    return view('series.create', compact('genres', 'actors', 'directors'));
+}
+
+3. GENRE CONTROLLER (app/Http/Controllers/GenreController.php)
+-----------------------------------------------------------
+
+public function index()
+{
+    $genres = MovieGenre::where('is_active', true)
+                       ->orderBy('name')
+                       ->paginate(10);
+
+    return view('genres.index', compact('genres'));
+}
+
+public function create()
+{
+    return view('genres.create');
+}
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:movie_genres,name',
+        'is_active' => 'boolean'
+    ]);
+
+    // Generate slug from name
+    $validated['slug'] = Str::slug($validated['name']);
+    $validated['is_active'] = true;
+
+    MovieGenre::create($validated);
+
+    return redirect()->route('genres.index')
+                    ->with('success', 'Genre created successfully.');
+}
+
+public function show(MovieGenre $genre)
+{
+    $movies = $genre->movies()
+        ->where('is_active', true)
+        ->with(['genres', 'actors', 'directors'])
+        ->latest()
+        ->paginate(10);
+
+    $series = $genre->series()
+        ->where('is_active', true)
+        ->with(['genre', 'actors', 'directors'])
+        ->latest()
+        ->paginate(10);
+
+    return view('genres.show', compact('genre', 'movies', 'series'));
+}
+
+public function edit(MovieGenre $genre)
+{
+    return view('genres.edit', compact('genre'));
+}
+
+public function update(Request $request, MovieGenre $genre)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:movie_genres,name,' . $genre->id,
+        'is_active' => 'boolean'
+    ]);
+
+    // Generate slug from name
+    $validated['slug'] = Str::slug($validated['name']);
+
+    $genre->update($validated);
+
+    return redirect()->route('genres.index')
+                    ->with('success', 'Genre updated successfully.');
+}
+
+public function destroy(MovieGenre $genre)
+{
+    $genre->delete();
+    return redirect()->route('genres.index')
+        ->with('success', 'Genre deleted successfully.');
+}
+
+4. REVIEW CONTROLLER (app/Http/Controllers/ReviewController.php)
+------------------------------------------------------------
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'comment' => 'required|string|max:1000',
+        'movie_id' => 'required_without:series_id|exists:movies,id',
+        'series_id' => 'required_without:movie_id|exists:series,id',
+    ]);
+
+    $validated['user_id'] = auth()->id();
+    $validated['is_active'] = true;
+    $validated['rating'] = 0; // Set a default value since the column exists
+
+    // Check if user already reviewed this movie/series
+    $existingReview = Review::where('user_id', auth()->id())
+        ->where(function ($query) use ($validated) {
+            $query->where('movie_id', $validated['movie_id'] ?? null)
+                ->orWhere('series_id', $validated['series_id'] ?? null);
+        })
+        ->first();
+
+    if ($existingReview) {
+        $existingReview->update($validated);
+        $message = 'Review updated successfully.';
+    } else {
+        Review::create($validated);
+        $message = 'Review added successfully.';
+    }
+
+    if (isset($validated['movie_id'])) {
+        return redirect()->route('movies.show', $validated['movie_id'])
+            ->with('success', $message);
+    } else {
+        return redirect()->route('series.show', $validated['series_id'])
+            ->with('success', $message);
+    }
+}
+
+public function destroy(Review $review)
+{
+    $review->delete();
+    return back()->with('success', 'Review deleted successfully.');
+}
+
+5. FAVORITE CONTROLLER (app/Http/Controllers/FavoriteController.php)
+----------------------------------------------------------------
+
+public function index()
+{
+    $movieFavorites = auth()->user()->favorites()
+        ->where('favoritable_type', Movie::class)
+        ->with('favoritable')
+        ->latest()
+        ->paginate(9);
+
+    $seriesFavorites = auth()->user()->favorites()
+        ->where('favoritable_type', Series::class)
+        ->with('favoritable')
+        ->latest()
+        ->paginate(9);
+
+    return view('favorites.index', compact('movieFavorites', 'seriesFavorites'));
+}
+
+public function movies()
+{
+    $favorites = auth()->user()->favorites()
+        ->where('favoritable_type', Movie::class)
+        ->with('favoritable')
+        ->latest()
+        ->paginate(10);
+
+    return view('favorites.movies', compact('favorites'));
+}
+
+public function series()
+{
+    $favorites = auth()->user()->favorites()
+        ->where('favoritable_type', Series::class)
+        ->with('favoritable')
+        ->latest()
+        ->paginate(10);
+
+    return view('favorites.series', compact('favorites'));
+}
+
+public function toggle(Request $request)
+{
+    $request->validate([
+        'type' => 'required|in:movie,series',
+        'id' => 'required|integer'
+    ]);
+
+    $model = $request->type === 'movie' ? Movie::class : Series::class;
+    $item = $model::findOrFail($request->id);
+
+    $favorite = auth()->user()->favorites()
+        ->where('favoritable_type', $model)
+        ->where('favoritable_id', $request->id)
+        ->first();
+
+    if ($favorite) {
+        $favorite->delete();
+        $message = 'Removed from favorites';
+    } else {
+        auth()->user()->favorites()->create([
+            'favoritable_type' => $model,
+            'favoritable_id' => $request->id
+        ]);
+        $message = 'Added to favorites';
+    }
+
+    return back()->with('success', $message);
+}
+
+Note: This file contains the actual code implementations of all CRUD methods from the controllers in the application. The code is organized by controller and includes both GET and POST/PUT methods where applicable. Some methods may have additional functionality or validation rules specific to their use case.
